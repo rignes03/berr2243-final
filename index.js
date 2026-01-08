@@ -26,7 +26,7 @@ async function connectToDB() {
         console.error("❌ MongoDB Connection Error:", err);
     }
 }
-connectToDB();
+//connectToDB();
 
 // --- 3. SECURITY FUNCTIONS ---
 
