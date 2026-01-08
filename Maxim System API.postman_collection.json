@@ -1,0 +1,27 @@
+{
+	"info": {
+		"_postman_id": "182e96c0-4bb5-47df-a22b-8de1d6495ab0",
+		"name": "Maxim System API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49663369",
+		"_collection_link": "https://rignes03-9756499.postman.co/workspace/Rignes's-Workspace~e1269665-2a3f-4a86-862c-e71baf56639d/collection/49663369-182e96c0-4bb5-47df-a22b-8de1d6495ab0?action=share&source=collection_link&creator=49663369"
+	},
+	"item": [
+		{
+			"name": "CUSTOMER REGISTER",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "CUSTOMER LOGIN",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
