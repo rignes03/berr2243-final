@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -10,6 +11,10 @@ const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
 // --- 1. MIDDLEWARE ---
+// Serve the Dashboard on the homepage
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
 app.use(cors());
 app.use(express.json());
 
@@ -26,7 +31,7 @@ async function connectToDB() {
         console.error("❌ MongoDB Connection Error:", err);
     }
 }
-//connectToDB();
+connectToDB();
 
 // --- 3. SECURITY FUNCTIONS ---
 
