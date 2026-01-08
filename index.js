@@ -21,7 +21,7 @@ app.use(express.json());
 // --- 2. DATABASE CONNECTION ---
 let db;
 async function connectToDB() {
-    const client = new MongoClient(process.env.MONGO_URI);
+    const client = new MongoClient("mongodb+srv://Rignes:RignesPassword2026@cluster0.zxnfijm.mongodb.net/?appName=Cluster0");
     try {
         await client.connect();
         // Uses the database name from your connection string or defaults to 'RideHailingDB'
