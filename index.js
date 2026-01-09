@@ -185,7 +185,7 @@ app.post('/rides/:id/rate', authenticate, async (req, res) => {
 app.get('/rides', async (req, res) => {
     try {
         const rides = await db.collection('rides').find({}).toArray();
-        res.status(200).json(srides);
+        res.status(200).json(rides);
     } catch (err) {
         res.status(500).json({ error: "Could not fetch rides" });
     }
