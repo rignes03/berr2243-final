@@ -29,7 +29,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Rides Dashboard</h1>
+    <h1>🚖 Rides Dashboard</h1>
 
     <div class="alert alert-info small">
       This dashboard reads your Postman collection and calls your local API.<br>
@@ -43,7 +43,7 @@
         <tr>
           <th>ID</th>
           <th>Pickup Location</th>
-          <th>Destination</th>
+          <th>Dropoff Location</th>
           <th>Driver ID</th>
           <th>Status</th>
           <th>Actions</th>
@@ -74,53 +74,25 @@
         }
         rides.forEach(r => {
           const tr = document.createElement('tr');
+          
+          // --- FIX: Using YOUR database field names (pickup_location) ---
           tr.innerHTML = `
             <td>${r._id || '-'}</td>
-            <td>${r.pickupLocation || r['pickup destination'] || '-'}</td>
-            <td>${r.destination || '-'}</td>
-            <td>${r.driverId || '-'}</td>
+            <td>${r.pickup_location || '-'}</td> 
+            <td>${r.dropoff_location || '-'}</td>
+            <td>${r.driver_id || '-'}</td>
             <td><span class="badge ${r.status==='cancelled'?'bg-danger':'bg-success'}">${r.status || 'requested'}</span></td>
             <td>
-              <button data-id="${r._id}" class="btn btn-sm btn-warning btn-update">Toggle Cancel</button>
-              <button data-id="${r._id}" class="btn btn-sm btn-danger btn-delete">Delete</button>
+              <button disabled class="btn btn-sm btn-secondary">Delete (Not Implemented)</button>
             </td>
           `;
           tbody.appendChild(tr);
         });
       } catch (err) {
         console.error(err);
-        msgEl.textContent = 'Could not fetch rides. Is your server running and CORS enabled?';
+        msgEl.textContent = 'Could not fetch rides. Is your server running?';
       }
     }
-
-    document.addEventListener('click', async (e) => {
-      if (e.target.classList.contains('btn-delete')) {
-        const id = e.target.getAttribute('data-id');
-        if (!confirm('Delete ride ' + id + '?')) return;
-        try {
-          const resp = await fetch(API_BASE + '/rides/' + id, { method: 'DELETE' });
-          if (!resp.ok) throw new Error('Delete failed');
-          await loadRides();
-        } catch (err) {
-          msgEl.textContent = 'Delete failed.';
-        }
-      }
-
-      if (e.target.classList.contains('btn-update')) {
-        const id = e.target.getAttribute('data-id');
-        try {
-          const resp = await fetch(API_BASE + '/rides/' + id, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: 'cancelled' })
-          });
-          if (!resp.ok) throw new Error('Update failed');
-          await loadRides();
-        } catch (err) {
-          msgEl.textContent = 'Update failed.';
-        }
-      }
-    });
 
     loadRides();
   </script>
