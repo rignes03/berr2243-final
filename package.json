@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Database and Cloud System project",
   "main": "index.js",
- "scripts": {
-  "start": "node index.js"
-},
+  "scripts": {
+    "start": "node index.js"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

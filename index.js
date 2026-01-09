@@ -22,7 +22,6 @@ app.get('/', (req, res) => {
 // --- 2. DATABASE CONNECTION ---
 let db;
 async function connectToDB() {
-    // Use the environment variable for security
     const client = new MongoClient(process.env.MONGO_URI);
     try {
         await client.connect();
@@ -169,11 +168,10 @@ app.post('/rides/:id/rate', authenticate, async (req, res) => {
     }
 });
 
-// --- DASHBOARD ROUTE: View All Rides (Fixed Typo) ---
+// --- DASHBOARD ROUTE: View All Rides ---
 app.get('/rides', async (req, res) => {
     try {
         const rides = await db.collection('rides').find({}).toArray();
-        // Corrected: changed 'srides' to 'rides'
         res.status(200).json(rides);
     } catch (err) {
         res.status(500).json({ error: "Could not fetch rides" });
@@ -377,7 +375,7 @@ app.get('/admin/analytics', authenticate, authorize(['admin']), async (req, res)
     }
 });
 
-// --- START SERVER ---
+// --- START SERVER (SINGLE ENTRY POINT) ---
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
