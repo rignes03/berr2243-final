@@ -185,7 +185,7 @@ app.post('/rides/:id/rate', authenticate, async (req, res) => {
 app.get('/rides', async (req, res) => {
     try {
         const rides = await db.collection('rides').find({}).toArray();
-        res.status(200).json(rides);
+        res.status(200).json(srides);
     } catch (err) {
         res.status(500).json({ error: "Could not fetch rides" });
     }
@@ -392,4 +392,4 @@ app.get('/admin/analytics', authenticate, authorize(['admin']), async (req, res)
         res.status(500).json({ error: "Analytics failed" });
     }
 });
-
+// Final dashboard fix deployed
