@@ -12,26 +12,35 @@ const saltRounds = 10;
 
 // --- 1. MIDDLEWARE ---
 // Serve the Dashboard on the homepage
-app.get('/', (req, res) => {
+app.use(cors());                 
+app.use(express.json());        
+
+app.get('/', (req, res) => {    
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
-app.use(cors());
-app.use(express.json());
+
 
 // --- 2. DATABASE CONNECTION ---
 let db;
-async function connectToDB() {
-    const client = new MongoClient(process.env.MONGO_URI);
+
+async function startServer() {
     try {
+        const client = new MongoClient(process.env.MONGO_URI);
         await client.connect();
-        // Uses the database name from your connection string or defaults to 'RideHailingDB'
-        db = client.db('RideHailingDB'); 
+        db = client.db('RideHailingDB');
         console.log("✅ Connected to MongoDB");
+
+        app.listen(port, () => {
+            console.log(`🚀 Server running on port ${port}`);
+        });
     } catch (err) {
-        console.error("❌ MongoDB Connection Error:", err);
+        console.error("❌ Failed to connect to MongoDB", err);
+        process.exit(1);
     }
 }
-connectToDB();
+
+startServer();
+
 
 // --- 3. SECURITY FUNCTIONS ---
 
@@ -384,7 +393,3 @@ app.get('/admin/analytics', authenticate, authorize(['admin']), async (req, res)
     }
 });
 
-// --- START SERVER ---
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
