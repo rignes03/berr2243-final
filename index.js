@@ -21,7 +21,7 @@ app.use(express.json());
 // --- 2. DATABASE CONNECTION ---
 let db;
 async function connectToDB() {
-    const client = new MongoClient("mongodb+srv://Rignes:RignesPassword2026@cluster0.zxnfijm.mongodb.net/?appName=Cluster0");
+    const client = new MongoClient(process.env.MONGO_URI);
     try {
         await client.connect();
         // Uses the database name from your connection string or defaults to 'RideHailingDB'
@@ -267,7 +267,27 @@ app.patch('/rides/:id/accept', authenticate, authorize(['driver']), async (req, 
         res.status(400).json({ error: "Acceptance failed" });
     }
 });
+// 10.5 Complete Ride
+app.patch('/rides/:id/complete', authenticate, authorize(['driver']), async (req, res) => {
+    try {
+        const { fare } = req.body; 
+        const result = await db.collection('rides').updateOne(
+            { 
+                _id: new ObjectId(req.params.id), 
+                driver_id: new ObjectId(req.user.userId),
+                status: "accepted" 
+            },
+            { $set: { status: "completed", fare: parseFloat(fare), completed_at: new Date() } }
+        );
 
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: "Ride not found or not assigned to you" });
+        }
+        res.status(200).json({ message: "Ride marked as completed" });
+    } catch (err) {
+        res.status(400).json({ error: "Completion failed" });
+    }
+});
 // 11. View Earnings
 app.get('/drivers/:id/earnings', authenticate, authorize(['driver']), async (req, res) => {
     try {
