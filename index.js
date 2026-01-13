@@ -1,3 +1,4 @@
+// Force update for Azure deployment
 const path = require('path');
 require('dotenv').config();
 const express = require('express');
