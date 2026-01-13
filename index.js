@@ -25,7 +25,7 @@ async function connectToDB() {
     const client = new MongoClient(process.env.MONGO_URI);
     try {
         await client.connect();
-        db = client.db('MAXIM SYSTEM');
+        db = client.db('MAXIM_SYSTEM');
         console.log("✅ Connected to MongoDB");
     } catch (err) {
         console.error("❌ MongoDB Connection Error:", err);
