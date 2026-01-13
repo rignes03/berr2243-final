@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
-// --- 1. MIDDLEWARE ---
+// --- 1. MIDDLEWARE --
 app.use(cors());
 app.use(express.json());
 
@@ -25,7 +25,7 @@ async function connectToDB() {
     const client = new MongoClient(process.env.MONGO_URI);
     try {
         await client.connect();
-        db = client.db('RideHailingDB');
+        db = client.db('MAXIM SYSTEM');
         console.log("✅ Connected to MongoDB");
     } catch (err) {
         console.error("❌ MongoDB Connection Error:", err);
