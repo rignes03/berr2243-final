@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #222; color: white; }
+        .stat-box { background: #444; padding: 20px; margin: 10px; display: inline-block; width: 150px; text-align: center; border-radius: 10px; }
+        h1 { color: #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>📊 System Analytics</h1>
+    <div class="stat-box">
+        <h3>Users</h3>
+        <h2 id="users">0</h2>
+    </div>
+    <div class="stat-box">
+        <h3>Drivers</h3>
+        <h2 id="drivers">0</h2>
+    </div>
+    <div class="stat-box">
+        <h3>Rides</h3>
+        <h2 id="rides">0</h2>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if(!token) window.location.href = '/login';
+
+        async function loadStats() {
+            const res = await fetch('/admin/analytics', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('users').innerText = data.users;
+                document.getElementById('drivers').innerText = data.drivers;
+                document.getElementById('rides').innerText = data.rides;
+            } else {
+                alert('Failed to load analytics. Are you logged in as Admin?');
+            }
+        }
+        loadStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Dashboard</title>
+    <style>body { font-family: sans-serif; padding: 20px; }</style>
+</head>
+<body>
+    <h1>🚖 Driver Portal</h1>
+    <h3>Available Rides</h3>
+    <div id="rides">Loading...</div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if(!token) window.location.href = '/login';
+
+        async function loadRides() {
+            const res = await fetch('/rides');
+            const rides = await res.json();
+            document.getElementById('rides').innerHTML = rides
+                .filter(r => r.status === 'pending')
+                .map(r => `
+                    <div style="border:1px solid #ccc; padding:10px; margin:5px;">
+                        <p>${r.pickup_location} ➝ ${r.dropoff_location}</p>
+                        <button onclick="acceptRide('${r._id}')">Accept Ride</button>
+                    </div>
+                `).join('');
+        }
+
+        async function acceptRide(id) {
+            const res = await fetch(`/rides/${id}/accept`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            });
+            if(res.ok) { alert('Ride Accepted!'); loadRides(); }
+        }
+        loadRides();
+    </script>
+</body>
+</html>

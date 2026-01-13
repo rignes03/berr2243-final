@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Dashboard</title>
+    <style>body { font-family: sans-serif; padding: 20px; }</style>
+</head>
+<body>
+    <h1>📍 Book a Ride</h1>
+    <input type="text" id="pickup" placeholder="Pickup Location">
+    <input type="text" id="dropoff" placeholder="Dropoff Location">
+    <input type="datetime-local" id="time">
+    <button onclick="bookRide()">Book Now</button>
+    <hr>
+    <h3>My Rides</h3>
+    <ul id="rideList"></ul>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if(!token) window.location.href = '/login';
+
+        async function bookRide() {
+            const res = await fetch('/rides', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({
+                    pickup_location: document.getElementById('pickup').value,
+                    dropoff_location: document.getElementById('dropoff').value,
+                    scheduled_time: document.getElementById('time').value
+                })
+            });
+            if(res.ok) { alert('Ride Booked!'); loadRides(); }
+        }
+
+        async function loadRides() {
+            // Note: In a real app, you'd filter this by user ID.
+            // For now, fetching all rides to show functionality.
+            const res = await fetch('/rides'); 
+            const rides = await res.json();
+            const list = document.getElementById('rideList');
+            list.innerHTML = rides.map(r => `<li>${r.pickup_location} ➝ ${r.dropoff_location} (${r.status})</li>`).join('');
+        }
+        loadRides();
+    </script>
+</body>
+</html>

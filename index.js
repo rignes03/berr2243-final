@@ -15,10 +15,26 @@ app.use(cors());
 app.use(express.json());
 
 // Serve the Dashboard
+// --- SERVE HTML PAGES ---
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
+    res.sendFile(path.join(__dirname, 'dashboard.html')); // Main Landing Page
 });
 
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html')); // Login Page
+});
+
+app.get('/dashboard/customer', (req, res) => {
+    res.sendFile(path.join(__dirname, 'customer.html')); // Customer Dashboard
+});
+
+app.get('/dashboard/driver', (req, res) => {
+    res.sendFile(path.join(__dirname, 'driver.html')); // Driver Dashboard
+});
+
+app.get('/dashboard/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html')); // Admin Dashboard
+});
 // --- 2. DATABASE CONNECTION ---
 let db;
 async function connectToDB() {
@@ -249,6 +265,38 @@ app.get('/drivers/:id/earnings', authenticate, authorize(['driver']), async (req
 });
 
 // 12. Admin Login & System Analytics omitted for brevity but should be here.
+// --- 12. ADMIN LOGIN (Required to fix your 404 Error) ---
+app.post('/admin/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        // Check if admin exists in 'admins' collection
+        const admin = await db.collection('admins').findOne({ username });
+        
+        // Simple check (in production, use bcrypt like you did for users)
+        if (!admin || admin.password !== password) {
+            return res.status(401).json({ error: "Invalid credentials" });
+        }
+
+        // Generate a token specifically for admin
+        const token = jwt.sign({ userId: admin._id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ message: "Login successful", token });
+    } catch (err) {
+        res.status(500).json({ error: "Login failed" });
+    }
+});
+
+// --- 13. ADMIN APPROVE DRIVER (You will need this next) ---
+app.patch('/admin/approve/:driverId', authenticate, authorize(['admin']), async (req, res) => {
+    try {
+        const result = await db.collection('drivers').updateOne(
+            { _id: new ObjectId(req.params.driverId) },
+            { $set: { approved: true } }
+        );
+        res.status(200).json({ updated: result.modifiedCount });
+    } catch (err) {
+        res.status(400).json({ error: "Approval failed" });
+    }
+});
 // (Keeping the rest of your admin routes is fine, just ensure they are included in the file)
 
 // 15. System Analytics (Example)

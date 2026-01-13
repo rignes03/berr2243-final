@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Maxim System</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #222; color: white; }
+        .container { background: #333; padding: 30px; border-radius: 10px; width: 300px; text-align: center; }
+        input, select { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+        button { width: 100%; padding: 10px; background: #ffc107; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔑 Login</h2>
+        <select id="role">
+            <option value="users">Customer</option>
+            <option value="drivers">Driver</option>
+            <option value="admin">Admin</option>
+        </select>
+        <input type="text" id="email" placeholder="Email / Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Sign In</button>
+        <p id="msg" style="color: red;"></p>
+    </div>
+
+    <script>
+        async function login() {
+            const role = document.getElementById('role').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const endpoint = role === 'admin' ? '/admin/login' : `/${role}/login`;
+            const body = role === 'admin' ? { username: email, password } : { email, password };
+
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem('token', data.token); // Save Token
+                if (role === 'users') window.location.href = '/dashboard/customer';
+                if (role === 'drivers') window.location.href = '/dashboard/driver';
+                if (role === 'admin') window.location.href = '/dashboard/admin';
+            } else {
+                document.getElementById('msg').innerText = data.error;
+            }
+        }
+    </script>
+</body>
+</html>
